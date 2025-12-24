@@ -2,19 +2,16 @@
 
 Independent AI module for BunnyEra · Agents, prompts, and automation logic.
 
-## 🚀 Features
-- Modular AI agents (Planner, Executor, Reviewer, Leader)
-- Prompt-driven automation workflows
-- Extensible design for integration with BunnyEra Console
-- CI/CD ready with GitHub Actions
+## Features
+- Intelligent agents for text generation, translation, and verification
+- Prompt-based automation workflows
+- Integration with BunnyEra Console for unified orchestration
 
-## 📂 Structure
-- `src/agents/` → Core agent logic
-- `src/prompts/` → Prompt templates
-- `src/utils/` → Helper functions
-- `tests/` → Unit tests
+## Structure
+- `agents/` → Core AI agents and prompts
+- `automation/` → Workflow automation logic
+- `controllers/` → API and logic controllers
+- `services/` → External service integration
 
-## ⚙️ Setup
-```bash
-npm install
-npm run dev
+## License
+MIT License
