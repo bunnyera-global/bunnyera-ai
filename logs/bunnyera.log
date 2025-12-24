@@ -1,0 +1,41 @@
+[INFO] 2025-12-19T18:57:09.995Z - Telegram Bot Token not configured, skipping init.
+[INFO] 2025-12-19T18:57:54.458Z - Telegram Bot Token not configured, skipping init.
+[INFO] 2025-12-19T18:58:43.740Z - Telegram Bot Token not configured, skipping init.
+[ERROR] 2025-12-19T18:58:43.780Z - Database sync error: 
+[INFO] 2025-12-19T18:58:47.271Z - GET /?ide_webview_request_time=1766170727181
+[INFO] 2025-12-19T18:58:47.350Z - GET /@vite/client
+[INFO] 2025-12-19T18:59:10.628Z - GET /?ide_webview_request_time=1766170727181
+[INFO] 2025-12-19T18:59:10.674Z - GET /?ide_webview_request_time=1766170727181
+[INFO] 2025-12-19T18:59:10.867Z - GET /@vite/client
+[INFO] 2025-12-19T18:59:35.406Z - GET /?ide_webview_request_time=1766170727181
+[INFO] 2025-12-19T18:59:35.506Z - GET /?ide_webview_request_time=1766170727181
+[INFO] 2025-12-19T18:59:35.717Z - GET /@vite/client
+[INFO] 2025-12-19T18:59:43.562Z - Telegram Bot Token not configured, skipping init.
+[INFO] 2025-12-19T18:59:43.593Z - Database synced
+[INFO] 2025-12-19T18:59:43.596Z - Server is running on port 3001
+[INFO] 2025-12-21T04:33:38.151Z - Telegram Bot Token not configured, skipping init.
+[INFO] 2025-12-21T04:33:38.189Z - Database synced
+[INFO] 2025-12-21T04:33:38.191Z - Server is running on port 3001
+[INFO] 2025-12-21T04:34:40.419Z - Telegram Bot Token not configured, skipping init.
+[INFO] 2025-12-21T04:34:40.858Z - Database synced
+[INFO] 2025-12-21T04:34:40.861Z - Server is running on port 3001
+[INFO] 2025-12-21T10:30:17.713Z - Telegram Bot Token not configured, skipping init.
+[INFO] 2025-12-21T10:30:17.748Z - Database synced
+[INFO] 2025-12-21T10:30:17.751Z - Server is running on port 3001
+[INFO] 2025-12-21T10:30:26.426Z - GET /?ide_webview_request_time=1766313024932
+[INFO] 2025-12-21T10:30:26.509Z - GET /@vite/client
+[INFO] 2025-12-22T23:36:02.661Z - Telegram Bot Token not configured, skipping init.
+[INFO] 2025-12-22T23:36:02.717Z - Database synced
+[INFO] 2025-12-22T23:37:50.574Z - Telegram Bot Token not configured, skipping init.
+[INFO] 2025-12-22T23:37:50.637Z - Database synced
+[INFO] 2025-12-22T23:37:50.641Z - Server is running on port 3001
+[INFO] 2025-12-22T23:57:59.567Z - GET /
+[INFO] 2025-12-22T23:58:00.524Z - GET /favicon.ico
+[INFO] 2025-12-23T00:00:06.500Z - POST /generate
+[ERROR] 2025-12-23T00:00:06.559Z - Ollama Call Failed: Error
+[INFO] 2025-12-23T08:43:16.225Z - Telegram Bot Token not configured, skipping init.
+[INFO] 2025-12-23T08:43:16.260Z - Database synced
+[INFO] 2025-12-23T08:43:16.262Z - Server is running on port 3001
+[INFO] 2025-12-23T08:43:23.062Z - GET /?ide_webview_request_time=1766479402951
+[INFO] 2025-12-23T08:43:23.193Z - GET /@vite/client
+[INFO] 2025-12-23T08:43:52.606Z - GET /health
