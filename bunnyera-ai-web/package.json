@@ -12,6 +12,27 @@
         "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .\"",
         "electron:build": "npm run build && electron-builder"
     },
+    "build": {
+        "appId": "com.bunnyera.ai",
+        "productName": "BunnyEra AI",
+        "directories": {
+            "output": "dist_electron"
+        },
+        "files": [
+            "dist/**/*",
+            "electron/**/*"
+        ],
+        "win": {
+            "target": "nsis",
+            "icon": "public/favicon.ico"
+        },
+        "mac": {
+            "target": "dmg"
+        },
+        "linux": {
+            "target": "AppImage"
+        }
+    },
     "dependencies": {
         "clsx": "^2.1.0",
         "framer-motion": "^11.0.8",

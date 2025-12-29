@@ -39,3 +39,21 @@
 [INFO] 2025-12-23T08:43:23.062Z - GET /?ide_webview_request_time=1766479402951
 [INFO] 2025-12-23T08:43:23.193Z - GET /@vite/client
 [INFO] 2025-12-23T08:43:52.606Z - GET /health
+[INFO] 2025-12-28T11:13:15.094Z - Telegram Bot Token not configured, skipping init.
+[INFO] 2025-12-28T11:13:15.135Z - Database synced
+[INFO] 2025-12-28T11:13:15.138Z - Server is running on port 3001
+[INFO] 2025-12-28T11:14:10.263Z - GET /
+[INFO] 2025-12-28T11:14:10.805Z - GET /favicon.ico
+[INFO] 2025-12-28T11:23:21.268Z - POST /auth/register-email
+[INFO] 2025-12-28T11:23:21.396Z - POST /auth/login-email
+[INFO] 2025-12-28T11:23:21.470Z - POST /generate
+[INFO] 2025-12-28T11:23:21.471Z - Calling Gateway: http://localhost:3002/v1/chat/completions
+[ERROR] 2025-12-28T11:23:21.520Z - AI Gateway Call Failed: Request failed with status code 504
+[ERROR] 2025-12-28T11:23:21.520Z - Gateway Response: "Error occurred while trying to proxy: localhost:3002/chat/completions"
+[INFO] 2025-12-29T13:53:18.813Z - POST /auth/register-email
+[INFO] 2025-12-29T13:55:00.049Z - POST /generate
+[INFO] 2025-12-29T13:55:00.050Z - Calling Gateway: http://localhost:3002/v1/chat/completions
+[ERROR] 2025-12-29T13:55:00.241Z - AI Gateway Call Failed: Request failed with status code 504
+[ERROR] 2025-12-29T13:55:00.245Z - Gateway Response: "Error occurred while trying to proxy: localhost:3002/chat/completions"
+[INFO] 2025-12-29T15:05:45.099Z - POST /auth/login-email
+[INFO] 2025-12-29T15:05:48.771Z - POST /auth/register-email

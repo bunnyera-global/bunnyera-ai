@@ -1,27 +1,30 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const config = require('../config/config');
 
-// 初始化 Sequelize 实例
-// 优先使用 SQLite 以确保零配置运行
-const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'database.sqlite',
-    logging: false
-});
+let sequelize;
 
-// 如果需要切换回 MySQL，请注释上面代码并使用下面代码：
-/*
-const sequelize = new Sequelize(config.dbUri, {
-    dialect: 'mysql',
-    logging: false,
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-    }
-});
-*/
+if (process.env.DB_DIALECT === 'mysql' || process.env.DB_DIALECT === 'postgres') {
+    // 生产环境：使用外部数据库 (MySQL/PostgreSQL)
+    console.log(`🔌 Connecting to external database (${process.env.DB_DIALECT})...`);
+    sequelize = new Sequelize(process.env.DB_URI, {
+        dialect: process.env.DB_DIALECT,
+        logging: false,
+        pool: {
+            max: 5,
+            min: 0,
+            acquire: 30000,
+            idle: 10000
+        }
+    });
+} else {
+    // 开发/默认环境：使用本地 SQLite
+    console.log('📂 Using local SQLite database...');
+    sequelize = new Sequelize({
+        dialect: 'sqlite',
+        storage: 'database.sqlite',
+        logging: false
+    });
+}
 
 // 定义 User 模型
 const User = sequelize.define('User', {

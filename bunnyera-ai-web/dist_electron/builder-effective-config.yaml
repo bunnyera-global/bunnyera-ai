@@ -1,0 +1,17 @@
+directories:
+  output: dist_electron
+  buildResources: build
+appId: com.bunnyera.ai
+productName: BunnyEra AI
+files:
+  - filter:
+      - dist/**/*
+      - electron/**/*
+win:
+  target: nsis
+  icon: public/favicon.ico
+mac:
+  target: dmg
+linux:
+  target: AppImage
+electronVersion: 39.2.7

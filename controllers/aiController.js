@@ -1,43 +1,43 @@
 const axios = require('axios');
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 const config = require('../config/config');
 const logger = require('../logs/logger');
 
-// 初始化 Gemini
-let genAI = null;
-if (config.geminiApiKey) {
-    genAI = new GoogleGenerativeAI(config.geminiApiKey);
-}
-
-// 通用 AI 调用函数
-const callAI = async (prompt) => {
-    // 1. 优先尝试 Gemini
-    if (genAI) {
-        try {
-            const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-            const result = await model.generateContent(prompt);
-            const response = await result.response;
-            const text = response.text();
-            if (text) return text;
-        } catch (error) {
-            logger.error(`Gemini Call Failed: ${error.message}`);
-            // Gemini 失败，继续尝试 Ollama
-        }
-    }
-
-    // 2. 尝试 Ollama
+// 通用 AI 调用函数 - 通过 Unified Model Gateway
+const callAI = async (messages) => {
     try {
-        const response = await axios.post(`${config.ollamaUrl}/api/generate`, {
-            model: config.modelName === 'gemini-pro' ? 'qwen2.5:3b' : config.modelName, // Fallback model name if needed
-            prompt: prompt,
-            stream: false
+        // 构建 OpenAI 兼容的请求体
+        const payload = {
+            model: "default", // Gateway 决定具体模型
+            messages: messages,
+            temperature: 0.7
+        };
+
+        // 调用 Gateway
+        const gatewayUrl = `${config.gatewayUrl}/v1/chat/completions`;
+        logger.info(`Calling Gateway: ${gatewayUrl}`);
+
+        const response = await axios.post(gatewayUrl, payload, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            timeout: 60000 // 60s timeout
         });
-        return response.data.response;
+
+        // 解析 OpenAI 格式响应
+        if (response.data && response.data.choices && response.data.choices.length > 0) {
+            return response.data.choices[0].message.content;
+        } else {
+            throw new Error('Invalid response format from Gateway');
+        }
+
     } catch (error) {
-        logger.error(`Ollama Call Failed: ${error.message}`);
+        logger.error(`AI Gateway Call Failed: ${error.message}`);
+        if (error.response) {
+            logger.error(`Gateway Response: ${JSON.stringify(error.response.data)}`);
+        }
         
-        // 3. 最后的兜底：模拟回复
-        return `[模拟回复] 哎呀，AI 连接出了点小问题（可能是 Key 没配置或网络不通），但我依然觉得这个主意不错！🐰\n\n（请检查后端 .env 配置或确保 Ollama 已启动）`;
+        // 兜底回复
+        return `[系统消息] AI 网关连接失败 (${error.message})。请检查 Gateway 是否运行在 ${config.gatewayUrl}，以及模型服务是否正常。🐰`;
     }
 };
 
@@ -49,15 +49,23 @@ exports.generateCopy = async (req, res) => {
         return res.status(400).json({ error: '请告诉我你想写什么主题的文案哦～' });
     }
 
-    const systemPrompt = `You are BunnyEra Assistant, a cute and professional cross-border e-commerce expert. 
-    Task: Generate a promotional copy.
-    Topic: ${topic}
-    Platform: ${platform || 'General'}
-    Language: ${language || 'Chinese'}
-    Tone: Engaging, Professional, yet Cute (use emojis like 🐰, ✨, 📦).`;
+    const messages = [
+        {
+            role: "system",
+            content: `You are BunnyEra Assistant, a cute and professional cross-border e-commerce expert. 
+            Tone: Engaging, Professional, yet Cute (use emojis like 🐰, ✨, 📦).`
+        },
+        {
+            role: "user",
+            content: `Task: Generate a promotional copy.
+            Topic: ${topic}
+            Platform: ${platform || 'General'}
+            Language: ${language || 'Chinese'}`
+        }
+    ];
 
     try {
-        const result = await callAI(systemPrompt);
+        const result = await callAI(messages);
         res.json({ 
             result, 
             message: '文案生成好啦！看看满不满意？🐰' 
@@ -75,13 +83,20 @@ exports.translate = async (req, res) => {
         return res.status(400).json({ error: '请提供原文和目标语言哦～' });
     }
 
-    const systemPrompt = `You are a professional translator. 
-    Translate the following text to ${targetLang}. 
-    Maintain the original tone but ensure it fits the local culture.
-    Text: "${text}"`;
+    const messages = [
+        {
+            role: "system",
+            content: `You are a professional translator. Maintain the original tone but ensure it fits the local culture.`
+        },
+        {
+            role: "user",
+            content: `Translate the following text to ${targetLang}:
+            "${text}"`
+        }
+    ];
 
     try {
-        const result = await callAI(systemPrompt);
+        const result = await callAI(messages);
         res.json({ 
             result, 
             message: '翻译完成啦！🌍' 

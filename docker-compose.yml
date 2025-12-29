@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  bunnyera-backend:
+    build: .
+    ports:
+      - "3001:3001"
+      - "3002:3002"
+    environment:
+      - PORT=3001
+      - GATEWAY_PORT=3002
+      - DB_URI=sqlite:database.sqlite # Use SQLite for easy start, switch to MySQL for prod
+      - MODEL_PROVIDER=OLLAMA # Or OPENAI
+      # - OPENAI_API_KEY=your_key
+    volumes:
+      - ./database.sqlite:/usr/src/app/database.sqlite
+    restart: unless-stopped

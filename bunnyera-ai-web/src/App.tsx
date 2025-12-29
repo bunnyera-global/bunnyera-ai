@@ -3,11 +3,10 @@ import { ModuleTaskbar } from './components/ModuleTaskbar';
 import { WindowHeader } from './components/WindowHeader';
 import { WindowFooter } from './components/WindowFooter';
 import { Chat } from './pages/Chat';
-import { News } from './pages/News';
-import { Knowledge } from './pages/Knowledge';
 import { Accounts } from './pages/Accounts';
 import { LoginScreen } from './pages/Login';
-import { Activity, Terminal, CreditCard, Play, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Activity, Terminal, CreditCard, Play } from 'lucide-react';
+// import { AnimatePresence, motion } from 'framer-motion';
 
 // --- Sub-Views for Sidebar Modules ---
 
