@@ -1,40 +1,73 @@
-# 🐇 BunnyEra AI — Enterprise Multi‑Agent Intelligence System
+# 🐇 BunnyEra AI — Enterprise Multi‑Agent Intelligence Engine  
+### BunnyEra LLC · 2025
 
-BunnyEra AI 是 BunnyEra LLC 的核心智能系统，基于多智能体（Multi‑Agent）架构构建，提供任务规划、自动化执行、企业级 API 服务、身份资源调度、虚拟卡系统、通知系统、以及 BunnyEra Console 的 AI 引擎能力。
-
-本项目采用企业级分层架构，支持 Web、Mobile、Console、Matrix 等多端接入，是 BunnyEra 全生态的智能中枢。
+BunnyEra AI 是 BunnyEra 品牌体系中的核心智能引擎，负责多智能体协作、自动化执行、任务规划、代码生成、审查与系统级集成。  
+本仓库采用企业级模块化架构，并与 BunnyEra Console、BunnyEra System、BunnyEra Matrix、NotifyCenter 深度联动。
 
 ---
 
-## 🚀 Features
+## 🚀 Overview
 
-### 🧠 多智能体系统（Agents）
-- Planner — 任务拆解与规划  
-- Leader — 调度与流程控制  
-- Coder — 代码生成与修复  
-- Reviewer — 质量审查  
-- Executor — 执行任务与调用服务  
+This repository contains the AI-driven core of the BunnyEra ecosystem, including:
 
-### ⚙ 自动化（Automation）
-- 定时任务  
-- 注册脚本  
-- RPA 工作流  
-- 资源池轮询（手机号 / 邮箱 / 虚拟卡）  
+- Multi‑agent architecture  
+- Prompt engineering system  
+- Automation & workflow engine  
+- Task planning and execution  
+- Integration with BunnyEra Console & System  
+- Modular, scalable enterprise architecture  
 
-### 🌐 API 网关（Gateway）
-- 统一入口  
-- 鉴权、限流、监控  
-- 服务编排  
+---
 
-### 🖥 Web & Mobile
-- bunnyera-ai-web 前端  
-- 移动端 API  
+## 🧠 Core Modules
 
-### 📦 企业级基础设施
-- Docker / Docker Compose  
-- SQLite（可迁移 PostgreSQL）  
-- 日志系统  
-- 中间件体系  
+### 1. Multi‑Agent System  
+Located in: `agents/`
+
+| Agent     | Role        | Description           |
+|-----------|-------------|-----------------------|
+| Leader    | Coordinator | Task coordination     |
+| Planner   | Strategist  | Step planning         |
+| Coder     | Developer   | Code generation       |
+| Reviewer  | QA          | Quality review        |
+| Executor  | Operator    | Task execution        |
+
+---
+
+### 2. Automation Engine  
+Located in: `automation/`
+
+Includes:
+
+- RPA automation  
+- Cron jobs  
+- Worker queues  
+- Webhook processing  
+- System‑level automation  
+
+---
+
+### 3. API Gateway  
+Located in: `gateway/`
+
+Responsibilities:
+
+- Unified API entry  
+- Authentication  
+- Rate limiting  
+- Routing  
+- Service orchestration  
+
+---
+
+### 4. System Integration
+
+Integrated with:
+
+- **BunnyEra Console**（日志、监控、信号、资源池）  
+- **BunnyEra System**（核心服务）  
+- **BunnyEra Matrix**（手机号池、邮箱池、虚拟卡系统）  
+- **BunnyEra NotifyCenter**（通知系统）  
 
 ---
 
@@ -43,19 +76,19 @@ BunnyEra AI 是 BunnyEra LLC 的核心智能系统，基于多智能体（Multi�
 ```
 bunnyera-ai/
 │
-├── agents/               # 多智能体核心
-├── automation/           # 自动化与 RPA
-├── bunnyera-ai-web/      # Web 前端
-├── config/               # 配置文件
-├── controllers/          # 控制器层
-├── gateway/              # API 网关
-├── logs/                 # 日志系统
-├── middleware/           # 中间件
-├── mobile/               # 移动端模块
-├── models/               # 数据模型
-├── routes/               # 路由定义
-├── services/             # 服务层
-├── tests/                # 测试用例
+├── agents/               # Multi-agent core
+├── automation/           # Automation & RPA
+├── bunnyera-ai-web/      # Web frontend
+├── config/               # Configurations
+├── controllers/          # Controllers
+├── gateway/              # API gateway
+├── logs/                 # Log system
+├── middleware/           # Middlewares
+├── mobile/               # Mobile module
+├── models/               # Database models
+├── routes/               # API routes
+├── services/             # Business logic
+├── tests/                # Test cases
 │
 ├── .env
 ├── .gitignore
@@ -69,48 +102,7 @@ bunnyera-ai/
 
 ---
 
-## 🏗 Architecture Overview
-
-- 多智能体协作框架  
-- MVC 分层结构  
-- API 网关 + 服务层  
-- 自动化任务调度  
-- Web / Mobile / Console 多端统一接入  
-
-架构图见下方 **System Architecture Diagram**。
-
----
-
-## 🐇 BunnyEra Ecosystem Integration
-
-BunnyEra AI 是以下系统的核心引擎：
-
-- **BunnyEra Console**（日志、监控、资源、信号、矩阵账号、推送）  
-- **BunnyEra Matrix**（手机号池、邮箱池、虚拟卡系统）  
-- **CloudBunn Matrix 浏览器**  
-- **BunnyEra Notify Center**  
-
----
-
-## 🐳 Deployment
-
-### Docker
-```
-docker build -t bunnyera-ai .
-docker run -p 3000:3000 bunnyera-ai
-```
-
-### Docker Compose
-```
-docker-compose up -d
-```
-
----
-
-## 📜 License
-MIT License © BunnyEra LLC
-
-# 🏗 BunnyEra AI — System Architecture Diagram
+## 🏗 System Architecture
 
 ```
                         ┌──────────────────────────┐
@@ -150,3 +142,69 @@ MIT License © BunnyEra LLC
                          └──────────────────────────┘
 ```
 
+---
+
+## ✨ Features
+
+- Multi‑agent collaboration  
+- Modular prompt system  
+- Automation execution engine  
+- System‑level integration  
+- Plugin‑ready architecture  
+- Enterprise Git branch workflow  
+
+---
+
+## 🧩 Development Workflow
+
+### Create feature branch
+```
+git checkout -b feature/<module>
+```
+
+### Commit changes
+```
+git add .
+git commit -m "feat: update <module>"
+```
+
+### Push branch
+```
+git push -u origin feature/<module>
+```
+
+### Pull Request Requirements
+- Automated tests  
+- Code review  
+- Architecture validation  
+
+---
+
+## 🐳 Deployment
+
+### Docker
+```
+docker build -t bunnyera-ai .
+docker run -p 3000:3000 bunnyera-ai
+```
+
+### Docker Compose
+```
+docker-compose up -d
+```
+
+---
+
+## 📜 License
+
+MIT License  
+© 2025 BunnyEra LLC
+
+---
+
+## 🔗 Related Repositories
+
+- BunnyEra Console  
+- BunnyEra System  
+- BunnyEra Matrix  
+- BunnyEra NotifyCenter  
