@@ -1,100 +1,74 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const http = require('http');
-const WebSocket = require('ws');
-const config = require('./config/config');
-const logger = require('./logs/logger');
-const { sequelize } = require('./models/user');
-
-// 路由导入
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/user');
-const generateRoutes = require('./routes/generate');
-const translateRoutes = require('./routes/translate');
-const chatRoutes = require('./routes/chatRoutes'); // 🐰 Chat API
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const fetch = require("node-fetch");
+const http = require("http");
+const WebSocket = require("ws");
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-// CORS 配置（Railway + Vercel 必须允许）
-app.use(cors({
-    origin: [
-        'http://localhost:5173',
-        'http://localhost:8080',
-        'https://ai.bunnyera.com',
-        process.env.FRONTEND_URL // Railway 推荐
-    ],
-    credentials: true
-}));
+// Middlewares
+app.use(cors());
+app.use(express.json());
+app.use(morgan("dev"));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// OpenRouter 调用函数
+async function callOpenRouter(messages, model = process.env.OPENROUTER_DEFAULT_MODEL) {
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      "Content-Type": "application/json",
+      "HTTP-Referer": process.env.OPENROUTER_SITE_URL || "https://bunnyera.com",
+      "X-Title": process.env.OPENROUTER_APP_NAME || "BunnyEra AI"
+    },
+    body: JSON.stringify({
+      model,
+      messages
+    })
+  });
 
-// 日志中间件
-app.use((req, res, next) => {
-    logger.info(`${req.method} ${req.url}`);
-    next();
-});
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`OpenRouter Error: ${res.status} ${text}`);
+  }
 
-// 路由挂载
-app.use('/auth', authRoutes);
-app.use('/user', userRoutes);
-app.use('/generate', generateRoutes);
-app.use('/translate', translateRoutes);
-app.use('/api/chat', chatRoutes);
+  const data = await res.json();
+  return data.choices[0].message.content;
+}
 
 // 基础路由
-app.get('/', (req, res) => {
-    res.json({ message: 'Welcome to BunnyEra AI API 🐰' });
+app.get("/", (req, res) => {
+  res.json({ ok: true, service: "BunnyEra AI Cloud API" });
 });
 
-app.get('/health', (req, res) => {
-    res.send('OK');
-});
+// Chat API
+app.post("/api/chat", async (req, res) => {
+  try {
+    const { messages, model } = req.body;
+    const reply = await callOpenRouter(messages, model);
 
-// WebSocket 处理
-wss.on('connection', (ws) => {
-    logger.info('New WebSocket connection');
-
-    ws.send(JSON.stringify({
-        type: 'message',
-        content: `欢迎来到 BunnyEra Assistant 🐇
-我是蹦蹦跳跳的小兔子尹楠～
-有什么可以帮你的吗？`
-    }));
-
-    ws.on('message', (message) => {
-        logger.info(`Received: ${message}`);
-
-        setTimeout(() => {
-            ws.send(JSON.stringify({
-                type: 'reply',
-                content: `小兔子收到你的消息啦："${message}" 🐰\n正在努力思考中...`
-            }));
-        }, 1000);
+    res.json({
+      success: true,
+      reply
     });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// 错误处理
-app.use((err, req, res, next) => {
-    logger.error(err.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+// WebSocket
+wss.on("connection", (ws) => {
+  ws.send(JSON.stringify({
+    type: "message",
+    content: "欢迎来到 BunnyEra Assistant 🐇"
+  }));
 });
 
-// 启动服务
-sequelize.sync()
-    .then(() => {
-        logger.info('Database synced');
-        server.listen(config.port, () => {
-            logger.info(`Server running on port ${config.port}`);
-            console.log(`Server running on port ${config.port}`);
-        });
-    })
-    .catch(err => {
-        logger.error(`Database sync error: ${err.message}`);
-        server.listen(config.port, () => {
-            console.log(`Server running on port ${config.port} (DB Failed)`);
-        });
-    });
+// Railway 必须使用 process.env.PORT
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`BunnyEra AI running on port ${PORT}`);
+});
