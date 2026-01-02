@@ -1,19 +1,19 @@
 const express = require('express');
 const cors = require('cors');
 const { createProxyMiddleware } = require('http-proxy-middleware');
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.GATEWAY_PORT || 3001;
 
-// Configuration
+// Provider Configurations
 const CONFIG = {
   OPENAI: {
     target: 'https://api.openai.com',
     headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}` }
   },
   AZURE: {
-    target: process.env.AZURE_OPENAI_ENDPOINT, // e.g., https://my-resource.openai.azure.com/
+    target: process.env.AZURE_OPENAI_ENDPOINT,
     headers: { 'api-key': process.env.AZURE_OPENAI_KEY }
   },
   LOCAL: {
@@ -23,17 +23,19 @@ const CONFIG = {
 };
 
 // Default Provider
-const DEFAULT_PROVIDER = process.env.MODEL_PROVIDER || 'LOCAL'; // LOCAL, OPENAI, AZURE
+const DEFAULT_PROVIDER = process.env.MODEL_PROVIDER || 'LOCAL';
 
 app.use(cors());
 app.use(express.json());
 
 // Health Check
-app.get('/health', (_, res) => res.json({
-  status: 'ok',
-  service: 'BunnyERA-Model-Gateway',
-  provider: DEFAULT_PROVIDER
-}));
+app.get('/health', (_, res) => {
+  res.json({
+    status: 'ok',
+    service: 'BunnyERA-Model-Gateway',
+    provider: DEFAULT_PROVIDER
+  });
+});
 
 // Request Logger
 app.use((req, res, next) => {
@@ -41,35 +43,20 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routing Logic for /v1/*
-// This proxy dynamically selects the target based on the environment configuration.
-// Future enhancement: Inspect req.body.model to route to different providers dynamically.
+// Proxy for /v1/*
 const modelProxy = createProxyMiddleware({
-  router: (req) => {
-    // Dynamic routing strategy could go here
-    // For now, use the configured default provider
+  router: () => {
     const provider = CONFIG[DEFAULT_PROVIDER] || CONFIG.LOCAL;
     return provider.target;
   },
   changeOrigin: true,
-  pathRewrite: (path, req) => {
-    // Azure OpenAI requires specific path format: /openai/deployments/{deployment-id}/...
-    // This is a simplified handler. 
-    if (DEFAULT_PROVIDER === 'AZURE') {
-      // Azure logic might be complex, keeping it simple for now or pass-through
-      return path;
-    }
-    return path;
-  },
-  onProxyReq: (proxyReq, req) => {
+  pathRewrite: (path) => path,
+  onProxyReq: (proxyReq) => {
     const provider = CONFIG[DEFAULT_PROVIDER] || CONFIG.LOCAL;
 
-    // Inject Auth Headers if not present in client request
     if (provider.headers) {
       Object.entries(provider.headers).forEach(([key, value]) => {
-        if (value && !req.headers[key.toLowerCase()]) {
-          proxyReq.setHeader(key, value);
-        }
+        if (value) proxyReq.setHeader(key, value);
       });
     }
   },
@@ -81,10 +68,10 @@ const modelProxy = createProxyMiddleware({
 
 app.use('/v1', modelProxy);
 
-// Legacy/Specific Routes
+// Legacy Local Route
 app.use('/local', createProxyMiddleware({
-  target: 'http://localhost:8080', // Tabby or other local service
-  changeOrigin: true,
+  target: 'http://localhost:8080',
+  changeOrigin: true
 }));
 
 app.listen(PORT, () => {

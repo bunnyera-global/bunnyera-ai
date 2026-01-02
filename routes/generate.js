@@ -1,14 +1,17 @@
 const express = require('express');
-const router = express.Router();
-const aiController = require('../controllers/aiController');
-const authMiddleware = require('../middleware/auth');
+const axios = require('axios');
+const config = require('../config/config');
 
-// 根据环境变量控制鉴权
-const requireAuth = process.env.REQUIRE_AUTH === 'true';
-if (requireAuth) {
-    router.post('/', authMiddleware, aiController.generateCopy);
-} else {
-    router.post('/', aiController.generateCopy);
-}
+const router = express.Router();
+
+// 文本生成（通过 Gateway）
+router.post('/', async (req, res) => {
+    try {
+        const response = await axios.post(`${config.gatewayUrl}/v1/chat/completions`, req.body);
+        res.json(response.data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 module.exports = router;

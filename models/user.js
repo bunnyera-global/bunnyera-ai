@@ -3,8 +3,20 @@ const config = require('../config/config');
 
 let sequelize;
 
-if (process.env.DB_DIALECT === 'mysql' || process.env.DB_DIALECT === 'postgres') {
-    // 生产环境：使用外部数据库 (MySQL/PostgreSQL)
+// Railway 优先使用 DATABASE_URL
+if (process.env.DATABASE_URL) {
+    console.log(`🔌 Connecting to Railway database...`);
+    sequelize = new Sequelize(process.env.DATABASE_URL, {
+        dialect: process.env.DB_DIALECT || 'mysql',
+        logging: false,
+        dialectOptions: {
+            ssl: process.env.DB_SSL === 'true' ? { require: true, rejectUnauthorized: false } : false
+        }
+    });
+}
+
+// 明确指定 MySQL / Postgres
+else if (process.env.DB_DIALECT === 'mysql' || process.env.DB_DIALECT === 'postgres') {
     console.log(`🔌 Connecting to external database (${process.env.DB_DIALECT})...`);
     sequelize = new Sequelize(process.env.DB_URI, {
         dialect: process.env.DB_DIALECT,
@@ -16,8 +28,10 @@ if (process.env.DB_DIALECT === 'mysql' || process.env.DB_DIALECT === 'postgres')
             idle: 10000
         }
     });
-} else {
-    // 开发/默认环境：使用本地 SQLite
+}
+
+// 默认使用 SQLite（本地开发）
+else {
     console.log('📂 Using local SQLite database...');
     sequelize = new Sequelize({
         dialect: 'sqlite',
@@ -38,9 +52,7 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         unique: true,
         allowNull: true,
-        validate: {
-            isEmail: true
-        },
+        validate: { isEmail: true },
         comment: '用户邮箱'
     },
     phone: {

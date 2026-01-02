@@ -2,7 +2,9 @@
   "name": "bunnyera-ai",
   "version": "1.0.0",
   "description": "BunnyERA AI – 三合一桌面工作流",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "gateway": "cd gateway && node index.js",
     "server": "node server.js",
     "web": "cd bunnyera-ai-web && npm run dev",

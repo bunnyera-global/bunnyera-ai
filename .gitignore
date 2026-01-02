@@ -25,6 +25,13 @@ pnpm-lock.yaml
 .env.production.local
 
 # -----------------------------
+# Database
+# -----------------------------
+*.sqlite
+*.sqlite3
+database.sqlite
+
+# -----------------------------
 # Logs
 # -----------------------------
 logs/

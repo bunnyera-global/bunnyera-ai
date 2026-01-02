@@ -1,12 +1,26 @@
 const express = require('express');
+const { User } = require('../models/user');
+
 const router = express.Router();
-const userController = require('../controllers/userController');
-const authMiddleware = require('../middleware/auth');
 
-// 签到 (需要登录)
-router.post('/checkin', authMiddleware, userController.checkin);
+// 获取用户信息
+router.get('/:id', async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id);
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
-// 查询积分 (需要登录)
-router.get('/points', authMiddleware, userController.getPoints);
+// 更新用户
+router.put('/:id', async (req, res) => {
+    try {
+        await User.update(req.body, { where: { id: req.params.id } });
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 module.exports = router;

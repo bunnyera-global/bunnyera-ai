@@ -18,15 +18,17 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-// 中间件
+// CORS 配置（Railway + Vercel 必须允许）
 app.use(cors({
     origin: [
         'http://localhost:5173',
-        'http://localhost:8080', // Web Chat UI
-        'https://ai.bunnyera.com'
+        'http://localhost:8080',
+        'https://ai.bunnyera.com',
+        process.env.FRONTEND_URL // Railway 推荐
     ],
     credentials: true
 }));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -41,12 +43,13 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/generate', generateRoutes);
 app.use('/translate', translateRoutes);
-app.use('/api/chat', chatRoutes); // 🐰 Mount Chat API
+app.use('/api/chat', chatRoutes);
 
 // 基础路由
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome to BunnyEra AI API 🐰' });
 });
+
 app.get('/health', (req, res) => {
     res.send('OK');
 });
@@ -55,7 +58,6 @@ app.get('/health', (req, res) => {
 wss.on('connection', (ws) => {
     logger.info('New WebSocket connection');
 
-    // 发送欢迎语
     ws.send(JSON.stringify({
         type: 'message',
         content: `欢迎来到 BunnyEra Assistant 🐇
@@ -66,11 +68,10 @@ wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         logger.info(`Received: ${message}`);
 
-        // 模拟 AI 回复 (后续可接入 aiController)
         setTimeout(() => {
             ws.send(JSON.stringify({
                 type: 'reply',
-                content: `小兔子收到你的消息啦："${message}" 🐰\n正在努力思考中... (目前是自动回复哦)`
+                content: `小兔子收到你的消息啦："${message}" 🐰\n正在努力思考中...`
             }));
         }, 1000);
     });
@@ -82,17 +83,18 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Internal Server Error' });
 });
 
-// 启动服务前同步数据库 (仅开发环境)
-sequelize.sync().then(() => {
-    logger.info('Database synced');
-    server.listen(config.port, () => {
-        logger.info(`Server is running on port ${config.port}`);
-        console.log(`Server is running on port ${config.port}`);
+// 启动服务
+sequelize.sync()
+    .then(() => {
+        logger.info('Database synced');
+        server.listen(config.port, () => {
+            logger.info(`Server running on port ${config.port}`);
+            console.log(`Server running on port ${config.port}`);
+        });
+    })
+    .catch(err => {
+        logger.error(`Database sync error: ${err.message}`);
+        server.listen(config.port, () => {
+            console.log(`Server running on port ${config.port} (DB Failed)`);
+        });
     });
-}).catch(err => {
-    logger.error(`Database sync error: ${err.message}`);
-    // 即使数据库失败，也尝试启动 Server (为了测试非 DB 路由)
-    server.listen(config.port, () => {
-        console.log(`Server is running on port ${config.port} (DB Failed)`);
-    });
-});
